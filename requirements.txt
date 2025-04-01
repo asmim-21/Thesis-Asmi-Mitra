@@ -1,0 +1,8 @@
+openai
+transformers
+nltk
+spacy
+textblob
+pandas
+seaborn
+matplotlib
