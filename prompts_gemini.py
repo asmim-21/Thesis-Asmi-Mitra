@@ -2,7 +2,7 @@ from google import genai
 import pandas as pd
 
 # Set up Google Gemini API client
-API_KEY = "AIzaSyBXOPG5i8JLEidQKv3uyao9ijZS0OfO4ZA"
+API_KEY = ""
 client = genai.Client(api_key=API_KEY)
 
 # List of prompts to test
