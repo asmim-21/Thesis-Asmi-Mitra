@@ -6,3 +6,4 @@ textblob
 pandas
 seaborn
 matplotlib
+google-genai
