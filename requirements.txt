@@ -1,9 +1,10 @@
 openai
-transformers
-nltk
-spacy
-textblob
-pandas
-seaborn
-matplotlib
 google-genai
+pandas
+scikit-learn
+nltk
+textblob
+vaderSentiment
+seaborn
+numpy 
+scipy 
