@@ -1,10 +1,6 @@
-openai
-google-genai
 pandas
-scikit-learn
+torch
 nltk
-textblob
-vaderSentiment
-seaborn
-numpy 
-scipy 
+transformers
+sentence-transformers
+numpy

@@ -1,0 +1,5 @@
+LLM Name: GEMINI
+WEAT Score: 0.0589
+Lexical Diversity: 0.3319
+Top Words: [(',', 277), ('.', 203), ('and', 169), ('a', 82), ('to', 62), ('the', 60), ('*', 41), ('they', 39), ('in', 35), ('of', 28), ('are', 24), ('their', 22), ('or', 20), ('with', 19), ('for', 19), ('we', 19), ('is', 19), ('this', 16), ('skills', 14), ('engineering', 14)]
+Sentiment Distribution: {'positive': 0.7, 'neutral': 0.2, 'negative': 0.1}
