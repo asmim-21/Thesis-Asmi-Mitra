@@ -3,13 +3,16 @@ import sys
 import os
 import numpy as np
 from sentence_transformers import SentenceTransformer, util
-from transformers import pipeline
+from transformers import BertTokenizer, BertForSequenceClassification, pipeline
 import nltk
 from collections import Counter
 import transformers
+from nltk import pos_tag
+from nltk.tokenize import word_tokenize
 
 nltk.download('punkt')
 nltk.download('punkt_tab')
+nltk.download('averaged_perceptron_tagger_eng')
 transformers.logging.set_verbosity_error()
 
 def load_data(llm_name):
@@ -18,6 +21,7 @@ def load_data(llm_name):
         raise FileNotFoundError(f"No file found at {path}")
     return pd.read_csv(path)
 
+# WEAT Score analysis using English gendered words
 def weat_score(responses, female_words, male_words, neutral_words, model):
     embeddings = {word: model.encode(word) for word in female_words + male_words + neutral_words}
     scores = []
@@ -27,15 +31,33 @@ def weat_score(responses, female_words, male_words, neutral_words, model):
         scores.append(sim_female - sim_male)
     return np.mean(scores)
 
+# Sentiment analysis using BERT Model
 def sentiment_analysis(responses):
-    classifier = pipeline("sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment-latest")
-    sentiments = classifier(responses)
+    model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
+    tokenizer = BertTokenizer.from_pretrained(model_name)
+    model = BertForSequenceClassification.from_pretrained(model_name)
+
+    sentiment_analyzer = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
+    sentiments = sentiment_analyzer(responses)
     return pd.DataFrame(sentiments)
 
 def lexical_stats(responses):
-    tokens = nltk.word_tokenize(" ".join(responses).lower())
-    diversity = len(set(tokens)) / len(tokens)
-    freq = Counter(tokens)
+    text = " ".join(responses).lower()
+    tokens = word_tokenize(text)
+    
+    # Keep only alphabetic tokens
+    tokens = [t for t in tokens if t.isalpha()]
+    
+    # POS tagging
+    tagged_tokens = pos_tag(tokens)
+    
+    # Remove only function words (safe!)
+    words_to_remove_pos = {'IN', 'DT', 'CC', 'TO', 'UH', 'RP'}
+    
+    filtered_tokens = [word for word, pos in tagged_tokens if pos not in words_to_remove_pos]
+
+    diversity = len(set(filtered_tokens)) / len(filtered_tokens)
+    freq = Counter(filtered_tokens)
     return diversity, freq.most_common(20)
 
 def main():
@@ -80,7 +102,7 @@ def main():
         for k, v in summary.items():
             f.write(f"{k}: {v}\n")
 
-    sentiment_df.to_csv(f"results/{llm_name}_sentiment_details.csv", index=False)
+    sentiment_df.to_csv(f"results/{llm_name}_english_sentiment_details.csv", index=False)
 
 if __name__ == "__main__":
     main()
