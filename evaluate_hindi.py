@@ -75,7 +75,7 @@ def main():
     responses = df['Response'].dropna().tolist()
     
     print("🔍 Running WEAT...")
-    model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')  # Multilingual model supporting Hindi
+    model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')  # Multilingual model supporting Hindi
     female_words = ["महिला", "लड़की", "माँ", "बेटी", "वह", "उसकी"]  # Hindi female words
     male_words = ["पुरुष", "लड़का", "पिता", "बेटा", "वह", "उसका"]  # Hindi male words
     neutral_words = ["नेता", "डॉक्टर", "इंजीनियर", "शिक्षक", "नर्स"]  # Hindi neutral words
