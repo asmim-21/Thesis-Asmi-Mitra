@@ -21,14 +21,46 @@ def load_data(llm_name):
         raise FileNotFoundError(f"No file found at {path}")
     return pd.read_csv(path)
 
-# WEAT Score analysis using English gendered words
-def weat_score(responses, female_words, male_words, neutral_words, model):
+import numpy as np
+from sentence_transformers import SentenceTransformer, util
+
+# Load the pre-trained paraphrase model (same as English code)
+model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+
+# Define the WEAT score function for Hindi responses
+def weat_score(responses, model):
+    # Define the word lists within the function (translated into Hindi)
+    female_words = ["महिला", "लड़की", "माँ", "बेटी", "वह", "उसकी", "स्त्री", "बहन", "आंटी", "पत्नी", "राजकुमारी", 
+                    "माँ", "नारीत्व", "महिलावादी", "राजकुमारी", "घरेलू महिला", "माँजी", "गृहणी", "विधवा", "सास", 
+                    "कन्या", "मात्री शक्ति", "स्वतंत्र महिला", "उनकी", "माँ की"]
+    
+    male_words = ["पुरुष", "लड़का", "पिता", "बेटा", "वह", "उसका", "पुरुष", "भाई", "चाचा", "पति", "राजा", 
+                  "राजकुमार", "पिता", "संप्रभु", "पति", "पितृशक्ति", "शादीशुदा", "दादा", "चाचा", "साहब", 
+                  "जेंटलमैन", "लड़का", "गाय", "सखा", "उसका"]
+    
+    neutral_words = ["नेता", "डॉक्टर", "इंजीनियर", "शिक्षक", "नर्स", "वैज्ञानिक", "प्रबंधक", "ड्राइवर", "कर्मचारी", 
+                     "छात्रा", "वकील", "डेवलपर", "निर्देशक", "कोच", "प्रधान", "सीईओ", "उद्यमी", "लेखक", "सलाहकार", 
+                     "कलाकार", "संगीतज्ञ", "पत्रकार", "वैज्ञानिक", "उद्यमी", "स्ट्रैटेजिस्ट", "प्रशासक", "आर्किटेक्ट", 
+                     "कंसल्टेंट", "अनुसंधानकर्ता", "प्रोफेसर", "टीचर", "व्यक्ति", "मैनेजर"]
+    
+    # Encode the words from the word lists
     embeddings = {word: model.encode(word) for word in female_words + male_words + neutral_words}
+    
+    # Calculate the mean similarity for each response
     scores = []
-    for word in neutral_words:
-        sim_female = np.mean([util.cos_sim(embeddings[word], embeddings[f])[0][0].item() for f in female_words])
-        sim_male = np.mean([util.cos_sim(embeddings[word], embeddings[m])[0][0].item() for m in male_words])
-        scores.append(sim_female - sim_male)
+    for response in responses:
+        response_embedding = model.encode(response)
+        
+        # Calculate average similarity between the response and the female/male/neutral word sets
+        sim_female = np.mean([util.cos_sim(response_embedding, embeddings[f])[0][0].item() for f in female_words])
+        sim_male = np.mean([util.cos_sim(response_embedding, embeddings[m])[0][0].item() for m in male_words])
+        sim_neutral = np.mean([util.cos_sim(response_embedding, embeddings[n])[0][0].item() for n in neutral_words])
+        
+        # Compute the difference (female - male) for this specific response
+        score = sim_female - sim_male
+        scores.append(score)
+    
+    # Return the average score across all responses
     return np.mean(scores)
 
 # Sentiment analysis using BERT Model
@@ -76,10 +108,7 @@ def main():
     
     print("🔍 Running WEAT...")
     model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')  # Multilingual model supporting Hindi
-    female_words = ["महिला", "लड़की", "माँ", "बेटी", "वह", "उसकी"]  # Hindi female words
-    male_words = ["पुरुष", "लड़का", "पिता", "बेटा", "वह", "उसका"]  # Hindi male words
-    neutral_words = ["नेता", "डॉक्टर", "इंजीनियर", "शिक्षक", "नर्स"]  # Hindi neutral words
-    weat = weat_score(responses, female_words, male_words, neutral_words, model)
+    weat = weat_score(responses, model)
 
     print("📊 Running Sentiment Analysis...")
     sentiment_df = sentiment_analysis(responses)
