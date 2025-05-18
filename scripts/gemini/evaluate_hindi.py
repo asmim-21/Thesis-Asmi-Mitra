@@ -15,8 +15,7 @@ nltk.download('averaged_perceptron_tagger')
 transformers.logging.set_verbosity_error()
 
 # Load data from CSV
-def load_data(llm_name):
-    path = f"results/{llm_name}_responses_hindi.csv"
+def load_data(path):
     if not os.path.exists(path):
         raise FileNotFoundError(f"No file found at {path}")
     return pd.read_csv(path)
@@ -69,8 +68,19 @@ def sentiment_analysis(responses):
     tokenizer = BertTokenizer.from_pretrained(model_name)
     model = BertForSequenceClassification.from_pretrained(model_name)
 
-    sentiment_analyzer = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
-    sentiments = sentiment_analyzer(responses)
+    sentiment_analyzer = pipeline(
+        "sentiment-analysis",
+        model="nlptown/bert-base-multilingual-uncased-sentiment",  # or your chosen model
+        tokenizer="nlptown/bert-base-multilingual-uncased-sentiment",
+        truncation=True
+    )
+    sentiments = sentiment_analyzer(
+        responses,
+        truncation=True,
+        max_length=512,
+        return_all_scores=False
+    )
+
     return pd.DataFrame(sentiments)
 
 # Lexical diversity and frequency analysis
@@ -98,12 +108,17 @@ def determine_bias(fm, ff):
         return "Gender neutral"
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python evaluate_hindi.py <llm_name>")
+    if len(sys.argv) != 3:
+        print("Usage: python evaluate_hindi.py <input_csv_path> <output_name_prefix>")
         sys.exit(1)
 
-    llm_name = sys.argv[1]
-    df = load_data(llm_name)
+    input_path = sys.argv[1]
+    output_name_prefix = sys.argv[2]
+
+    if not os.path.exists(input_path):
+        raise FileNotFoundError(f"No file found at {input_path}")
+
+    df = pd.read_csv(input_path)
     responses = df['Response'].dropna().tolist()
     
     print("🔍 Running WEAT...")
@@ -125,17 +140,15 @@ def main():
     
     bias = determine_bias(fm, ff)
 
-    print(f"\n✅ Evaluation for {llm_name.upper()} (HINDI):")
+    print(f"\n✅ Evaluation Summary for: {output_name_prefix}")
     print(f"- WEAT Score: {weat:.4f}")
     print(f"- Lexical Diversity: {diversity:.4f}")
     print(f"- Top Words: {freq_words}")
     print(f"- Sentiment Distribution:\n{sentiment_df['label'].value_counts(normalize=True)}")
     print(f"- Gender Bias: {bias} (Male conjugates: {fm}, Female conjugates: {ff})")
 
-    # Save results
-    os.makedirs("results", exist_ok=True)
     summary = {
-        "LLM Name": llm_name.upper(),
+        "Input File": input_path,
         "WEAT Score": round(weat, 4),
         "Lexical Diversity": round(diversity, 4),
         "Top Words": freq_words,
@@ -145,11 +158,12 @@ def main():
         "Female Conjugates": ff
     }
 
-    with open(f"results/bias_detection/{llm_name}_hindi_summary.txt", "w", encoding="utf-8") as f:
+    with open(f"{output_name_prefix}_summary.txt", "w", encoding="utf-8") as f:
         for k, v in summary.items():
             f.write(f"{k}: {v}\n")
 
-    sentiment_df.to_csv(f"results/bias_detection/{llm_name}_hindi_sentiment_details.csv", index=False)
+    sentiment_df.to_csv(f"{output_name_prefix}_sentiment_details.csv", index=False)
+
 
 if __name__ == "__main__":
     main()

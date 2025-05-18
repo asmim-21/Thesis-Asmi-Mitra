@@ -1,4 +1,4 @@
-LLM Name: GEMINI
+Input File: results/gemini/initial_responses/gemini_responses_english.csv
 WEAT Score: 0.0248
 Lexical Diversity: 0.5091
 Top Words: [('they', 39), ('are', 24), ('their', 22), ('we', 19), ('is', 19), ('skills', 14), ('engineering', 14), ('strong', 13), ('support', 12), ('ideal', 11), ('patient', 11), ('it', 10), ('symptoms', 10), ('pain', 10), ('communication', 9), ('understanding', 9), ('can', 9), ('heart', 9), ('will', 9), ('he', 9)]
