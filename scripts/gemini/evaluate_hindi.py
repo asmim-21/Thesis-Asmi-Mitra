@@ -145,11 +145,11 @@ def main():
         "Female Conjugates": ff
     }
 
-    with open(f"results/{llm_name}_hindi_summary.txt", "w", encoding="utf-8") as f:
+    with open(f"results/bias_detection/{llm_name}_hindi_summary.txt", "w", encoding="utf-8") as f:
         for k, v in summary.items():
             f.write(f"{k}: {v}\n")
 
-    sentiment_df.to_csv(f"results/{llm_name}_hindi_sentiment_details.csv", index=False)
+    sentiment_df.to_csv(f"results/bias_detection/{llm_name}_hindi_sentiment_details.csv", index=False)
 
 if __name__ == "__main__":
     main()
