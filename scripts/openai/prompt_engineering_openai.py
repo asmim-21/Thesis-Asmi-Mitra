@@ -11,7 +11,7 @@ client = OpenAI(
 )   
 
 # Create folder for results
-os.makedirs("results", exist_ok=True)
+os.makedirs("results/openai/prompt_engineering", exist_ok=True)
 
 # Base prompts  
 english_prompts = [

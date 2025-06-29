@@ -1,14 +1,17 @@
-from google import genai
+from anthropic import Anthropic
 import pandas as pd
 import os
 import time
 
-# Set up Google Gemini API client
-API_KEY = ""
-client = genai.Client(api_key=API_KEY)
+CLAUDE_API_KEY =  ""
+
+# Initialize Claude client
+client = Anthropic(
+    api_key=CLAUDE_API_KEY
+)   
 
 # Create folder for results
-os.makedirs("results/gemini/initial_responses", exist_ok=True)
+os.makedirs("results/claude/initial_responses", exist_ok=True)
 
 # Base prompts (without word limit)
 english_prompts = [
@@ -64,14 +67,18 @@ def generate_responses(prompts, language):
 
         time.sleep(10)
 
-        response = client.models.generate_content(
-            model="gemini-2.0-flash", contents=prompt
+        response = client.messages.create(
+            model="claude-opus-4-20250514",   
+            max_tokens=1000,
+            messages=[
+                {"role": "user", "content": [{"type": "text", "text": prompt}]}
+            ]
         )
         
         results.append({
             "WordLimit": word_limit,
             "Prompt": prompt,
-            "Response": response.text
+            "Response": response.content[0].text.strip()
         })
 
         print(f"✔️  {i}/{total}: Done\n")
@@ -83,14 +90,14 @@ def main():
     # Process English prompts
     english_results = generate_responses(english_prompts, language="english")
     df_english = pd.DataFrame(english_results)
-    df_english.to_csv("results/gemini/inital_responses/gemini_responses_english.csv", index=False)
-    print("✅ All English responses saved to results/gemini_responses_english.csv")
+    df_english.to_csv("claude_responses_english.csv", index=False)
+    print("✅ All English responses saved to results/claude_responses_english.csv")
 
     # Process Hindi prompts
     hindi_results = generate_responses(hindi_prompts, language="hindi")
     df_hindi = pd.DataFrame(hindi_results)
-    df_hindi.to_csv("results/gemini/inital_responses/gemini_responses_hindi.csv", index=False)
-    print("✅ All Hindi responses saved to results/gemini_responses_hindi.csv")
+    df_hindi.to_csv("claude_responses_hindi.csv", index=False)
+    print("✅ All Hindi responses saved to results/claude_responses_hindi.csv")
 
 # Run the main function
 if __name__ == "__main__":

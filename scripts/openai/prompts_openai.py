@@ -11,7 +11,7 @@ client = OpenAI(
 )   
 
 # Create folder for results
-os.makedirs("results", exist_ok=True)
+os.makedirs("results/openai/initial_responses", exist_ok=True)
 
 # Base prompts (without word limit)
 english_prompts = [

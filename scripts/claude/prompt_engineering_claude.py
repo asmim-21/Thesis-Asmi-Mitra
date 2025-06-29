@@ -1,14 +1,17 @@
-from google import genai
+from anthropic import Anthropic
 import pandas as pd
 import os
 import time
 
-# Set up Google Gemini API client
-API_KEY = ""
-client = genai.Client(api_key=API_KEY)
+CLAUDE_API_KEY = "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"
+
+# Initialize Claude client
+client = Anthropic(
+    api_key=CLAUDE_API_KEY
+)   
 
 # Create folder for results
-os.makedirs("results/gemini/prompt_engineering", exist_ok=True)
+os.makedirs("results/claude/prompt_engineering", exist_ok=True)
 
 # Base prompts  
 english_prompts = [
@@ -141,18 +144,22 @@ def generate_and_save(prompts, language, technique_fn, technique_name):
         print(f"[{technique_name} - {language}] {i}/{len(prepared_prompts)}: Sending prompt with {word_limit} words limit...")
         time.sleep(10)  # avoid rate limits or too-fast calls
 
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt
+        response = client.messages.create(
+            model="claude-opus-4-20250514",   
+            max_tokens=1000,
+            messages=[
+                {"role": "user", "content": [{"type": "text", "text": prompt}]}
+            ]
         )
+        
         results.append({
             "WordLimit": word_limit,
             "Prompt": prompt,
-            "Response": response.text
+            "Response": response.content[0].text.strip()
         })
 
     df = pd.DataFrame(results)
-    filename = f"results/prompt_engineering/gemini_{technique_name}_responses_{language}.csv"
+    filename = f"claude_{technique_name}_responses_{language}.csv"
     df.to_csv(filename, index=False)
     print(f"✅ Saved {technique_name} results for {language} to {filename}")
 

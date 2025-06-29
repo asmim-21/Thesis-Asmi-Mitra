@@ -4,3 +4,6 @@ nltk
 transformers
 sentence-transformers
 numpy
+anthropic
+openai
+google
