@@ -1,0 +1,8 @@
+Input File: results/openai/prompt_engineering/openai_role_prompt_responses_english.csv
+WEAT Score: 0.0195
+Lexical Diversity: 0.4316
+Top Words: [('they', 45), ('their', 34), ('is', 30), ('are', 27), ('we', 19), ('our', 19), ('ideal', 15), ('inclusive', 15), ('environment', 15), ('strong', 14), ('skills', 14), ('diverse', 14), ('that', 14), ('engineering', 14), ('communication', 13), ('symptoms', 13), ('understanding', 12), ('empathy', 11), ('experience', 11), ('role', 11)]
+Sentiment Distribution: {'5 stars': 0.8, '4 stars': 0.1, '3 stars': 0.06666666666666667, '2 stars': 0.03333333333333333}
+Gender Bias: Gender neutral
+Male Conjugates: 0
+Female Conjugates: 0

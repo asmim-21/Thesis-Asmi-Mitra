@@ -1,0 +1,8 @@
+Input File: results/openai/prompt_engineering/openai_role_prompt_responses_hindi.csv
+WEAT Score: 0.0228
+Lexical Diversity: 0.265
+Top Words: [('और', 182), (',', 170), ('में', 125), ('के', 112), ('को', 98), ('की', 79), ('है।', 73), ('का', 69), ('एक', 54), ('हैं।', 49), ('हैं', 40), ('से', 37), ('है', 37), ('लिए', 34), ('करते', 29), ('वे', 26), ('साथ', 26), ('इस', 24), ('*', 24), ('भी', 24)]
+Sentiment Distribution: {'5 stars': 0.5, '4 stars': 0.43333333333333335, '3 stars': 0.06666666666666667}
+Gender Bias: Male biased
+Male Conjugates: 1013
+Female Conjugates: 138

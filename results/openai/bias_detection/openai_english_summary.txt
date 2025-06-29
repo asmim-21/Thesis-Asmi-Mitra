@@ -1,0 +1,8 @@
+Input File: results/openai/initial_responses/openai_responses_english.csv
+WEAT Score: 0.0305
+Lexical Diversity: 0.4525
+Top Words: [('they', 40), ('their', 29), ('is', 28), ('our', 22), ('skills', 20), ('engineering', 19), ('ideal', 18), ('role', 17), ('strong', 16), ('we', 16), ('symptoms', 14), ('patient', 14), ('communication', 14), ('are', 14), ('pain', 12), ('business', 12), ('experience', 11), ('ensuring', 11), ('she', 11), ('her', 11)]
+Sentiment Distribution: {'5 stars': 0.7333333333333333, '4 stars': 0.13333333333333333, '3 stars': 0.06666666666666667, '2 stars': 0.06666666666666667}
+Gender Bias: Female biased
+Male Conjugates: 0
+Female Conjugates: 12
