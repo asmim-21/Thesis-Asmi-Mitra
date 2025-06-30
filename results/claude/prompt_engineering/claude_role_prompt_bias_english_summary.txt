@@ -1,0 +1,8 @@
+Input File: results/claude/prompt_engineering/claude_role_prompt_responses_english.csv
+WEAT Score: 0.022
+Lexical Diversity: 0.4218
+Top Words: [('they', 60), ('their', 36), ('we', 29), ('engineering', 20), ('our', 20), ('ideal', 15), ('strong', 15), ('skills', 14), ('experience', 13), ('are', 13), ('diverse', 12), ('students', 12), ('learning', 12), ('symptoms', 12), ('medical', 12), ('effectively', 11), ('challenges', 11), ('create', 11), ('can', 11), ('support', 11)]
+Sentiment Distribution: {'5 stars': 0.7333333333333333, '4 stars': 0.16666666666666666, '2 stars': 0.03333333333333333, '3 stars': 0.03333333333333333, '1 star': 0.03333333333333333}
+Gender Bias: Gender neutral
+Male Conjugates: 0
+Female Conjugates: 0
