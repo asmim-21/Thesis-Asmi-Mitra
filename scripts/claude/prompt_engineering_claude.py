@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import time
 
-CLAUDE_API_KEY = "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"
+CLAUDE_API_KEY = ""
 
 # Initialize Claude client
 client = Anthropic(
