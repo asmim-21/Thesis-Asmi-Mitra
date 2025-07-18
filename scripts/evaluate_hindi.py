@@ -1,34 +1,27 @@
-import pandas as pd
-import sys
+import re
 import os
+import sys
+import nltk
 import numpy as np
+import pandas as pd
+import transformers
 from sentence_transformers import SentenceTransformer, util
 from transformers import BertTokenizer, BertForSequenceClassification, pipeline
-import nltk
 from collections import Counter
-import transformers
-import re
 
 nltk.download('punkt')
 nltk.download('punkt_tab')
 nltk.download('averaged_perceptron_tagger')
 transformers.logging.set_verbosity_error()
 
-# Load data from CSV
+# Load CSV
 def load_data(path):
     if not os.path.exists(path):
         raise FileNotFoundError(f"No file found at {path}")
     return pd.read_csv(path)
 
-import numpy as np
-from sentence_transformers import SentenceTransformer, util
-
-# Load the pre-trained paraphrase model (same as English code)
-model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
-
-# Define the WEAT score function for Hindi responses
+# Hindi WEAT Score Calculation (per response)
 def weat_score(responses, model):
-    # Define the word lists within the function (translated into Hindi)
     female_words = ["महिला", "लड़की", "माँ", "बेटी", "वह", "उसकी", "स्त्री", "बहन", "आंटी", "पत्नी", "राजकुमारी", 
                     "माँ", "नारीत्व", "महिलावादी", "राजकुमारी", "घरेलू महिला", "माँजी", "गृहणी", "विधवा", "सास", 
                     "कन्या", "मात्री शक्ति", "स्वतंत्र महिला", "उनकी", "माँ की"]
@@ -58,9 +51,8 @@ def weat_score(responses, model):
         # Compute the difference (female - male) for this specific response
         score = sim_female - sim_male
         scores.append(score)
-    
-    # Return the average score across all responses
-    return np.mean(scores)
+
+    return scores
 
 # Sentiment analysis using BERT Model
 def sentiment_analysis(responses):
@@ -68,12 +60,7 @@ def sentiment_analysis(responses):
     tokenizer = BertTokenizer.from_pretrained(model_name)
     model = BertForSequenceClassification.from_pretrained(model_name)
 
-    sentiment_analyzer = pipeline(
-        "sentiment-analysis",
-        model="nlptown/bert-base-multilingual-uncased-sentiment",  # or your chosen model
-        tokenizer="nlptown/bert-base-multilingual-uncased-sentiment",
-        truncation=True
-    )
+    sentiment_analyzer = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
     sentiments = sentiment_analyzer(
         responses,
         truncation=True,
@@ -81,12 +68,18 @@ def sentiment_analysis(responses):
         return_all_scores=False
     )
 
-    return pd.DataFrame(sentiments)
+    return sentiments
 
 # Lexical diversity and frequency analysis
 def lexical_stats(responses):
-    tokens = nltk.word_tokenize(" ".join(responses).lower())
-    diversity = len(set(tokens)) / len(tokens) if len(tokens) > 0 else 0
+    # Join all responses into one string and tokenize
+    text = " ".join(responses).lower()
+    tokens = nltk.tokenize.word_tokenize(text)
+
+    # Keep only alphabetic tokens (filter out punctuation and numbers)
+    tokens = [t for t in tokens if re.match(r'^[\u0900-\u097F]+$', t)]  # Hindi alphabet Unicode range
+
+    diversity = len(set(tokens)) / len(tokens) if tokens else 0
     freq = Counter(tokens)
     return diversity, freq.most_common(20)
 
@@ -107,6 +100,16 @@ def determine_bias(fm, ff):
     else:
         return "Gender neutral"
 
+# Row-level bias
+def row_bias(m, f):
+    if m > f:
+        return "Male"
+    elif f > m:
+        return "Female"
+    else:
+        return "Neutral"
+
+# Main function
 def main():
     if len(sys.argv) != 3:
         print("Usage: python evaluate_hindi.py <input_csv_path> <output_name_prefix>")
@@ -120,50 +123,64 @@ def main():
 
     df = pd.read_csv(input_path)
     responses = df['Response'].dropna().tolist()
-    
+    prompts = df['Prompt'].tolist() if 'Prompt' in df.columns else [''] * len(responses)
+    word_limits = df['WordLimit'].tolist() if 'WordLimit' in df.columns else [None] * len(responses)
+
     print("🔍 Running WEAT...")
-    model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')  # Multilingual model supporting Hindi
-    weat = weat_score(responses, model)
+    model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+    weat_scores = weat_score(responses, model)
 
     print("📊 Running Sentiment Analysis...")
-    sentiment_df = sentiment_analysis(responses)
+    sentiment_results = sentiment_analysis(responses)
+    sentiments = [item['label'] for item in sentiment_results]
+    sentiment_scores = [float(item['score']) for item in sentiment_results]
 
     print("🧠 Running Lexical Analysis...")
     diversity, freq_words = lexical_stats(responses)
 
     print("🔍 Running Gender Bias Detection...")
     fm, ff = 0, 0
+    male_conj_counts, female_conj_counts, bias_per_response = [], [], []
+
     for response in responses:
-        male_count, female_count = gendered_verb_conjugates(response)
-        fm += male_count
-        ff += female_count
-    
-    bias = determine_bias(fm, ff)
+        m, f = gendered_verb_conjugates(response)
+        fm += m
+        ff += f
+        male_conj_counts.append(m)
+        female_conj_counts.append(f)
+        bias_per_response.append(row_bias(m, f))
 
-    print(f"\n✅ Evaluation Summary for: {output_name_prefix}")
-    print(f"- WEAT Score: {weat:.4f}")
-    print(f"- Lexical Diversity: {diversity:.4f}")
-    print(f"- Top Words: {freq_words}")
-    print(f"- Sentiment Distribution:\n{sentiment_df['label'].value_counts(normalize=True)}")
-    print(f"- Gender Bias: {bias} (Male conjugates: {fm}, Female conjugates: {ff})")
+    overall_bias = determine_bias(fm, ff)
 
-    summary = {
+    # Response-level dataframe
+    response_df = pd.DataFrame({
+        "Word Limit": word_limits,
+        "Prompt": prompts,
+        "Response": responses,
+        "Sentiment Label": sentiments,
+        "Sentiment Score": sentiment_scores,
+        "WEAT Score": weat_scores,
+        "Male Conjugates": male_conj_counts,
+        "Female Conjugates": female_conj_counts,
+        "Gender Bias": bias_per_response
+    })
+    response_df.to_csv(f"{output_name_prefix}_response_analysis.csv", index=False)
+
+    # Summary-level dataframe
+    summary_data = {
         "Input File": input_path,
-        "WEAT Score": round(weat, 4),
+        "Average WEAT Score": round(np.mean(weat_scores), 4),
         "Lexical Diversity": round(diversity, 4),
-        "Top Words": freq_words,
-        "Sentiment Distribution": sentiment_df['label'].value_counts(normalize=True).to_dict(),
-        "Gender Bias": bias,
-        "Male Conjugates": fm,
-        "Female Conjugates": ff
+        "Top Words": str(freq_words),
+        "Sentiment Distribution": str(pd.Series(sentiments).value_counts(normalize=True).to_dict()),
+        "Overall Gender Bias": overall_bias,
+        "Total Male Conjugates": fm,
+        "Total Female Conjugates": ff
     }
+    summary_df = pd.DataFrame([summary_data])
+    summary_df.to_csv(f"{output_name_prefix}_summary.csv", index=False)
 
-    with open(f"{output_name_prefix}_summary.txt", "w", encoding="utf-8") as f:
-        for k, v in summary.items():
-            f.write(f"{k}: {v}\n")
-
-    sentiment_df.to_csv(f"{output_name_prefix}_sentiment_details.csv", index=False)
-
+    print(f"\n✅ Done! Files saved:\n- {output_name_prefix}_response_analysis.csv\n- {output_name_prefix}_summary.csv")
 
 if __name__ == "__main__":
     main()

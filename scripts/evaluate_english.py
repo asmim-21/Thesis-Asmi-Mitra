@@ -1,15 +1,13 @@
-import pandas as pd
-import sys
+import re
 import os
+import sys
+import nltk
 import numpy as np
+import pandas as pd
+import transformers
 from sentence_transformers import SentenceTransformer, util
 from transformers import BertTokenizer, BertForSequenceClassification, pipeline
-import nltk
 from collections import Counter
-import transformers
-from nltk import pos_tag
-from nltk.tokenize import word_tokenize
-import re
 
 nltk.download('punkt')
 nltk.download('punkt_tab')
@@ -52,8 +50,7 @@ def weat_score(responses, model):
         score = sim_female - sim_male
         scores.append(score)
     
-    # Return the average score across all responses
-    return np.mean(scores)
+    return scores
 
 # Sentiment analysis using BERT Model
 def sentiment_analysis(responses):
@@ -62,18 +59,24 @@ def sentiment_analysis(responses):
     model = BertForSequenceClassification.from_pretrained(model_name)
 
     sentiment_analyzer = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
-    sentiments = sentiment_analyzer(responses)
-    return pd.DataFrame(sentiments)
+    sentiments = sentiment_analyzer(
+        responses,
+        truncation=True,
+        max_length=512,
+        return_all_scores=False
+    )
+
+    return sentiments
 
 def lexical_stats(responses):
     text = " ".join(responses).lower()
-    tokens = word_tokenize(text)
+    tokens = nltk.tokenize.word_tokenize(text)
     
     # Keep only alphabetic tokens
     tokens = [t for t in tokens if t.isalpha()]
     
     # POS tagging
-    tagged_tokens = pos_tag(tokens)
+    tagged_tokens = nltk.pos_tag(tokens)
     
     # Remove only function words (safe!)
     words_to_remove_pos = {'IN', 'DT', 'CC', 'TO', 'UH', 'RP'}
@@ -82,6 +85,7 @@ def lexical_stats(responses):
 
     diversity = len(set(filtered_tokens)) / len(filtered_tokens)
     freq = Counter(filtered_tokens)
+
     return diversity, freq.most_common(20)
 
 # Function to detect gendered pronouns and corresponding verb conjugations
@@ -91,7 +95,7 @@ def gendered_verb_conjugates(text):
     female_pronouns = ['she', 'her', 'hers', 'herself', "she's"]
     
     # Tokenize the text and get a list of words
-    words = word_tokenize(text.lower())
+    words = nltk.tokenize.word_tokenize(text.lower())
     
     male_conjugates = 0
     female_conjugates = 0
@@ -118,62 +122,82 @@ def determine_bias(fm, ff):
     else:
         return "Gender neutral"
 
+def row_bias(m, f):
+    if m > f:
+        return "Male"
+    elif f > m:
+        return "Female"
+    else:
+        return "Neutral"
+    
+
+# Main
 def main():
     if len(sys.argv) != 3:
         print("Usage: python evaluate_english.py <input_csv_path> <output_name_prefix>")
         sys.exit(1)
 
     input_path = sys.argv[1]
-    output_name_prefix = sys.argv[2]
-
-    if not os.path.exists(input_path):
-        raise FileNotFoundError(f"No file found at {input_path}")
+    output_prefix = sys.argv[2]
 
     df = pd.read_csv(input_path)
     responses = df['Response'].dropna().tolist()
+    prompts = df['Prompt'].tolist() if 'Prompt' in df.columns else [''] * len(responses)
+    word_limits = df['WordLimit'].tolist() if 'WordLimit' in df.columns else [None] * len(responses)
 
     print("🔍 Running WEAT...")
     model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
-    weat = weat_score(responses, model)
+    weat_scores = weat_score(responses, model)
 
     print("📊 Running Sentiment Analysis...")
-    sentiment_df = sentiment_analysis(responses)
+    sentiments_raw = sentiment_analysis(responses)
+    sentiments = [item['label'] for item in sentiments_raw]
+    sentiment_scores = [float(item['score']) for item in sentiments_raw]
 
     print("🧠 Running Lexical Analysis...")
     diversity, freq_words = lexical_stats(responses)
 
     print("🔍 Running Gender Bias Detection...")
     fm, ff = 0, 0
-    for response in responses:
-        male_count, female_count = gendered_verb_conjugates(response)
-        fm += male_count
-        ff += female_count
-    
-    bias = determine_bias(fm, ff)
+    male_counts, female_counts, row_biases = [], [], []
+    for r in responses:
+        m, f = gendered_verb_conjugates(r)
+        fm += m
+        ff += f
+        male_counts.append(m)
+        female_counts.append(f)
+        row_biases.append(row_bias(m, f))
 
-    print(f"\n✅ Evaluation Summary for: {output_name_prefix}")
-    print(f"- WEAT Score: {weat:.4f}")
-    print(f"- Lexical Diversity: {diversity:.4f}")
-    print(f"- Top Words: {freq_words}")
-    print(f"- Sentiment Distribution:\n{sentiment_df['label'].value_counts(normalize=True)}")
-    print(f"- Gender Bias: {bias} (Male conjugates: {fm}, Female conjugates: {ff})")
+    overall_bias = determine_bias(fm, ff)
 
-    summary = {
+    # Save response-level CSV
+    response_df = pd.DataFrame({
+        "Word Limit": word_limits,
+        "Prompt": prompts,
+        "Response": responses,
+        "Sentiment Label": sentiments,
+        "Sentiment Score": sentiment_scores,
+        "WEAT Score": weat_scores,
+        "Male Conjugates": male_counts,
+        "Female Conjugates": female_counts,
+        "Gender Bias": row_biases
+    })
+    response_df.to_csv(f"{output_prefix}_response_analysis.csv", index=False)
+
+    # Save summary CSV
+    summary_data = {
         "Input File": input_path,
-        "WEAT Score": round(weat, 4),
+        "Average WEAT Score": round(np.mean(weat_scores), 4),
         "Lexical Diversity": round(diversity, 4),
-        "Top Words": freq_words,
-        "Sentiment Distribution": sentiment_df['label'].value_counts(normalize=True).to_dict(),
-        "Gender Bias": bias,
-        "Male Conjugates": fm,
-        "Female Conjugates": ff
+        "Top Words": str(freq_words),
+        "Sentiment Distribution": str(pd.Series(sentiments).value_counts(normalize=True).to_dict()),
+        "Overall Gender Bias": overall_bias,
+        "Total Male Conjugates": fm,
+        "Total Female Conjugates": ff
     }
+    pd.DataFrame([summary_data]).to_csv(f"{output_prefix}_summary.csv", index=False)
 
-    with open(f"{output_name_prefix}_summary.txt", "w", encoding="utf-8") as f:
-        for k, v in summary.items():
-            f.write(f"{k}: {v}\n")
-
-    sentiment_df.to_csv(f"{output_name_prefix}_sentiment_details.csv", index=False)
+    print(f"\n✅ Done! Files saved:\n- {output_prefix}_response_analysis.csv\n- {output_prefix}_summary.csv")
 
 if __name__ == "__main__":
     main()
