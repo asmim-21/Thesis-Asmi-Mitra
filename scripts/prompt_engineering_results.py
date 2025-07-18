@@ -5,42 +5,60 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
+# --- Seaborn Style ---
 sns.set(style="whitegrid")
 
+# --- Constants ---
 BASE_DIR = "results"
 LANGUAGES = ['english', 'hindi']
 SENTIMENT_LABELS = ['5 stars', '4 stars', '3 stars', '2 stars', '1 star']
 TECHNIQUES = ['explicit_instruction', 'few_shot', 'role_prompt']
 GENDER_COLORS = {'Male': 'blue', 'Female': 'pink', 'Neutral': 'green'}
 
+# Gendered word lists for English and Hindi
 LANGUAGE_WORD_MAPS = {
     'english': {
-        'female': ["woman", "girl", "mother", "daughter", "she", "her", "female", "sister", "aunt", "wife", "lady",
-                   "girlhood", "feminine", "queen", "princess", "daughter-in-law", "housewife", "matriarch",
-                   "bachelorette", "mom", "ladyboss", "herself", "hers", "her's"],
-        'male': ["man", "boy", "father", "son", "he", "him", "male", "brother", "uncle", "husband", "gentleman",
-                 "manhood", "masculine", "king", "prince", "brotherhood", "bachelor", "fatherhood", "patriarch",
-                 "dad", "father-in-law", "dude", "sir", "guy", "mister", "himself", "his", "he's"],
-        'neutral': ["leader", "doctor", "engineer", "teacher", "nurse", "scientist", "manager", "driver", "worker",
-                    "student", "lawyer", "developer", "director", "coach", "principal", "CEO", "entrepreneur",
-                    "author", "advisor", "technician", "artist", "musician", "journalist", "strategist",
-                    "administrator", "architect", "consultant", "researcher", "professor"]
+        'female': [
+            "woman", "girl", "mother", "daughter", "she", "her", "female", "sister", "aunt", "wife", "lady",
+            "girlhood", "feminine", "queen", "princess", "daughter-in-law", "housewife", "matriarch",
+            "bachelorette", "mom", "ladyboss", "herself", "hers", "her's"
+        ],
+        'male': [
+            "man", "boy", "father", "son", "he", "him", "male", "brother", "uncle", "husband", "gentleman",
+            "manhood", "masculine", "king", "prince", "brotherhood", "bachelor", "fatherhood", "patriarch",
+            "dad", "father-in-law", "dude", "sir", "guy", "mister", "himself", "his", "he's"
+        ],
+        'neutral': [
+            "leader", "doctor", "engineer", "teacher", "nurse", "scientist", "manager", "driver", "worker",
+            "student", "lawyer", "developer", "director", "coach", "principal", "CEO", "entrepreneur",
+            "author", "advisor", "technician", "artist", "musician", "journalist", "strategist",
+            "administrator", "architect", "consultant", "researcher", "professor"
+        ]
     },
     'hindi': {
-        'female': ["महिला", "लड़की", "माँ", "बेटी", "वह", "उसकी", "स्त्री", "बहन", "आंटी", "पत्नी", "राजकुमारी",
-                   "नारीत्व", "महिलावादी", "घरेलू महिला", "माँजी", "गृहणी", "विधवा", "सास", "कन्या", "मात्री शक्ति",
-                   "स्वतंत्र महिला", "उनकी", "माँ की"],
-        'male': ["पुरुष", "लड़का", "पिता", "बेटा", "वह", "उसका", "भाई", "चाचा", "पति", "राजा",
-                 "राजकुमार", "संप्रभु", "पितृशक्ति", "शादीशुदा", "दादा", "साहब", "जेंटलमैन", "गाय",
-                 "सखा"],
-        'neutral': ["नेता", "डॉक्टर", "इंजीनियर", "शिक्षक", "नर्स", "वैज्ञानिक", "प्रबंधक", "ड्राइवर", "कर्मचारी",
-                    "छात्रा", "वकील", "डेवलपर", "निर्देशक", "कोच", "प्रधान", "सीईओ", "उद्यमी", "लेखक", "सलाहकार",
-                    "कलाकार", "संगीतज्ञ", "पत्रकार", "स्ट्रैटेजिस्ट", "प्रशासक", "आर्किटेक्ट", "कंसल्टेंट",
-                    "अनुसंधानकर्ता", "प्रोफेसर", "टीचर", "व्यक्ति", "मैनेजर"]
+        'female': [
+            "महिला", "लड़की", "माँ", "बेटी", "वह", "उसकी", "स्त्री", "बहन", "आंटी", "पत्नी", "राजकुमारी",
+            "नारीत्व", "महिलावादी", "घरेलू महिला", "माँजी", "गृहणी", "विधवा", "सास", "कन्या", "मात्री शक्ति",
+            "स्वतंत्र महिला", "उनकी", "माँ की"
+        ],
+        'male': [
+            "पुरुष", "लड़का", "पिता", "बेटा", "वह", "उसका", "भाई", "चाचा", "पति", "राजा",
+            "राजकुमार", "संप्रभु", "पितृशक्ति", "शादीशुदा", "दादा", "साहब", "जेंटलमैन", "गाय",
+            "सखा"
+        ],
+        'neutral': [
+            "नेता", "डॉक्टर", "इंजीनियर", "शिक्षक", "नर्स", "वैज्ञानिक", "प्रबंधक", "ड्राइवर", "कर्मचारी",
+            "छात्रा", "वकील", "डेवलपर", "निर्देशक", "कोच", "प्रधान", "सीईओ", "उद्यमी", "लेखक", "सलाहकार",
+            "कलाकार", "संगीतज्ञ", "पत्रकार", "स्ट्रैटेजिस्ट", "प्रशासक", "आर्किटेक्ट", "कंसल्टेंट",
+            "अनुसंधानकर्ता", "प्रोफेसर", "टीचर", "व्यक्ति", "मैनेजर"
+        ]
     }
 }
 
 def get_gender_tag(word, language):
+    """
+    Return the gender tag ('Male', 'Female', 'Neutral') for a given word and language.
+    """
     word_lower = word.lower()
     if word_lower in LANGUAGE_WORD_MAPS[language]['male']:
         return 'Male'
@@ -50,6 +68,10 @@ def get_gender_tag(word, language):
         return 'Neutral'
 
 def load_summary_csv(model_name, technique, language):
+    """
+    Load the summary CSV for a given model, technique, and language.
+    Returns a dictionary with WEAT score, lexical diversity, top words, sentiment distribution, and gender conjugate counts.
+    """
     path = os.path.join(
         BASE_DIR, model_name, "prompt_engineering",
         f"{model_name}_{technique}_bias_{language}_summary.csv"
@@ -67,6 +89,10 @@ def load_summary_csv(model_name, technique, language):
     }
 
 def load_response_csv(model_name, technique, language):
+    """
+    Load the response analysis CSV for a given model, technique, and language.
+    Returns a pandas DataFrame.
+    """
     path = os.path.join(
         BASE_DIR, model_name, "prompt_engineering",
         f"{model_name}_{technique}_bias_{language}_response_analysis.csv"
@@ -74,12 +100,14 @@ def load_response_csv(model_name, technique, language):
     return pd.read_csv(path)
 
 def save_plot(title, model_name, technique):
+    """
+    Save the current matplotlib plot to the appropriate figures directory with a formatted filename.
+    """
     filename = title.replace(" - ", "_") \
                     .replace("(", "") \
                     .replace(")", "") \
                     .replace(" ", "_") \
                     .lower() + ".png"
-                    
     folder_path = os.path.join("figures", model_name, "prompt_engineering", technique)
     os.makedirs(folder_path, exist_ok=True)
     path = os.path.join(folder_path, filename)
@@ -87,6 +115,9 @@ def save_plot(title, model_name, technique):
     print(f"✅ Saved: {path}")
 
 def plot_gender_conjugate_barchart(data, model_name, technique, language):
+    """
+    Plot a bar chart of male and female conjugate counts for a given model, technique, and language.
+    """
     df = pd.DataFrame({
         'gender': ['Male', 'Female'],
         'count': [data.get('Male_Conjugates', 0), data.get('Female_Conjugates', 0)]
@@ -102,6 +133,9 @@ def plot_gender_conjugate_barchart(data, model_name, technique, language):
     plt.close()
 
 def plot_word_frequency_barchart(data, model_name, technique, language):
+    """
+    Plot a bar chart of the top 20 frequent words, colored by gender, for a given model, technique, and language.
+    """
     top_words = data.get('Top_Words', [])
     if not top_words:
         print(f"No Top Words data for {model_name} {technique} {language}")
@@ -126,6 +160,9 @@ def plot_word_frequency_barchart(data, model_name, technique, language):
     plt.close()
 
 def plot_sentiment_distribution(df, model_name, technique, language):
+    """
+    Plot a pie chart of sentiment label distribution for a given model, technique, and language.
+    """
     if 'Sentiment Label' not in df.columns:
         print(f"Missing 'Sentiment Label' column for {model_name} {technique} {language}")
         return
@@ -165,8 +202,10 @@ def generate_all_charts(model_name):
         except Exception as e:
             print(f"❌ Error processing {model_name} {lang}: {e}")
 
-
 def generate_all_charts(model_name):
+    """
+    Generate and save all charts (gender conjugate, word frequency, sentiment) for all techniques and languages for a given model.
+    """
     for technique in TECHNIQUES:
         for language in LANGUAGES:
             print(f"\n📊 Processing {model_name} - {technique} - {language}")
@@ -187,8 +226,9 @@ def generate_all_charts(model_name):
             except Exception as e:
                 print(f"❌ Error processing {model_name} - {technique} - {language}: {e}")
 
-
+# --- Main Execution ---
 if __name__ == "__main__":
+    # Generate all charts for each model
     generate_all_charts("gemini")
     generate_all_charts("claude")
     generate_all_charts("openai")
