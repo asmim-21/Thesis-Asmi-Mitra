@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# GEMINI
+echo "Running GEMINI evaluations..."
+
+# Hindi
+python scripts/evaluate_hindi.py results/gemini/initial_responses/gemini_responses_hindi.csv results/gemini/bias_detection/gemini_hindi
+python scripts/evaluate_hindi.py results/gemini/prompt_engineering/gemini_explicit_instruction_responses_hindi.csv results/gemini/prompt_engineering/gemini_explicit_instruction_bias_hindi
+python scripts/evaluate_hindi.py results/gemini/prompt_engineering/gemini_few_shot_responses_hindi.csv results/gemini/prompt_engineering/gemini_few_shot_bias_hindi
+python scripts/evaluate_hindi.py results/gemini/prompt_engineering/gemini_role_prompt_responses_hindi.csv results/gemini/prompt_engineering/gemini_role_prompt_bias_hindi
+
+# English
+python scripts/evaluate_english.py results/gemini/initial_responses/gemini_responses_english.csv results/gemini/bias_detection/gemini_english
+python scripts/evaluate_english.py results/gemini/prompt_engineering/gemini_explicit_instruction_responses_english.csv results/gemini/prompt_engineering/gemini_explicit_instruction_bias_english
+python scripts/evaluate_english.py results/gemini/prompt_engineering/gemini_few_shot_responses_english.csv results/gemini/prompt_engineering/gemini_few_shot_bias_english
+python scripts/evaluate_english.py results/gemini/prompt_engineering/gemini_role_prompt_responses_english.csv results/gemini/prompt_engineering/gemini_role_prompt_bias_english
+
+# OPENAI
+echo "Running OPENAI evaluations..."
+
+# Hindi
+python scripts/evaluate_hindi.py results/openai/initial_responses/openai_responses_hindi.csv results/openai/bias_detection/openai_hindi
+python scripts/evaluate_hindi.py results/openai/prompt_engineering/openai_explicit_instruction_responses_hindi.csv results/openai/prompt_engineering/openai_explicit_instruction_bias_hindi
+python scripts/evaluate_hindi.py results/openai/prompt_engineering/openai_few_shot_responses_hindi.csv results/openai/prompt_engineering/openai_few_shot_bias_hindi
+python scripts/evaluate_hindi.py results/openai/prompt_engineering/openai_role_prompt_responses_hindi.csv results/openai/prompt_engineering/openai_role_prompt_bias_hindi
+
+# English
+python scripts/evaluate_english.py results/openai/initial_responses/openai_responses_english.csv results/openai/bias_detection/openai_english
+python scripts/evaluate_english.py results/openai/prompt_engineering/openai_explicit_instruction_responses_english.csv results/openai/prompt_engineering/openai_explicit_instruction_bias_english
+python scripts/evaluate_english.py results/openai/prompt_engineering/openai_few_shot_responses_english.csv results/openai/prompt_engineering/openai_few_shot_bias_english
+python scripts/evaluate_english.py results/openai/prompt_engineering/openai_role_prompt_responses_english.csv results/openai/prompt_engineering/openai_role_prompt_bias_english
+
+# CLAUDE
+echo "Running CLAUDE evaluations..."
+
+# Hindi
+python scripts/evaluate_hindi.py results/claude/initial_responses/claude_responses_hindi.csv results/claude/bias_detection/claude_hindi
+python scripts/evaluate_hindi.py results/claude/prompt_engineering/claude_explicit_instruction_responses_hindi.csv results/claude/prompt_engineering/claude_explicit_instruction_bias_hindi
+python scripts/evaluate_hindi.py results/claude/prompt_engineering/claude_few_shot_responses_hindi.csv results/claude/prompt_engineering/claude_few_shot_bias_hindi
+python scripts/evaluate_hindi.py results/claude/prompt_engineering/claude_role_prompt_responses_hindi.csv results/claude/prompt_engineering/claude_role_prompt_bias_hindi
+
+# English
+python scripts/evaluate_english.py results/claude/initial_responses/claude_responses_english.csv results/claude/bias_detection/claude_english
+python scripts/evaluate_english.py results/claude/prompt_engineering/claude_explicit_instruction_responses_english.csv results/claude/prompt_engineering/claude_explicit_instruction_bias_english
+python scripts/evaluate_english.py results/claude/prompt_engineering/claude_few_shot_responses_english.csv results/claude/prompt_engineering/claude_few_shot_bias_english
+python scripts/evaluate_english.py results/claude/prompt_engineering/claude_role_prompt_responses_english.csv results/claude/prompt_engineering/claude_role_prompt_bias_english
+
+echo "✅ All evaluations complete."

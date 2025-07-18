@@ -1,8 +1,0 @@
-Input File: results/claude/prompt_engineering/claude_few_shot_responses_english.csv
-WEAT Score: 0.0218
-Lexical Diversity: 0.4385
-Top Words: [('they', 55), ('their', 24), ('we', 21), ('skills', 17), ('engineering', 17), ('ideal', 16), ('strong', 15), ('medical', 15), ('communication', 13), ('heart', 13), ('symptoms', 13), ('support', 12), ('learning', 12), ('are', 12), ('healthcare', 12), ('include', 12), ('you', 12), ('is', 12), ('work', 11), ('will', 11)]
-Sentiment Distribution: {'5 stars': 0.7333333333333333, '4 stars': 0.13333333333333333, '2 stars': 0.1, '3 stars': 0.03333333333333333}
-Gender Bias: Gender neutral
-Male Conjugates: 0
-Female Conjugates: 0

@@ -1,8 +1,0 @@
-Input File: results/openai/prompt_engineering/openai_explicit_instruction_responses_english.csv
-WEAT Score: 0.0197
-Lexical Diversity: 0.456
-Top Words: [('they', 55), ('are', 29), ('is', 28), ('their', 26), ('our', 22), ('skills', 19), ('engineering', 19), ('communication', 17), ('we', 17), ('strong', 16), ('them', 15), ('diverse', 12), ('role', 12), ('heart', 12), ('patient', 12), ('ideal', 11), ('can', 11), ('also', 10), ('environment', 10), ('innovation', 10)]
-Sentiment Distribution: {'5 stars': 0.6666666666666666, '4 stars': 0.23333333333333334, '3 stars': 0.1}
-Gender Bias: Gender neutral
-Male Conjugates: 0
-Female Conjugates: 0

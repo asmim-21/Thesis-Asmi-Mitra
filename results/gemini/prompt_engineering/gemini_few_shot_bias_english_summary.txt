@@ -1,8 +1,0 @@
-Input File: results/gemini/prompt_engineering/gemini_few_shot_responses_english.csv
-WEAT Score: 0.0219
-Lexical Diversity: 0.5042
-Top Words: [('they', 36), ('are', 29), ('their', 24), ('is', 22), ('we', 17), ('skills', 14), ('ideal', 13), ('engineering', 13), ('also', 13), ('patient', 12), ('strong', 11), ('communication', 11), ('symptoms', 10), ('support', 10), ('it', 9), ('care', 9), ('excellent', 8), ('crucial', 8), ('possesses', 8), ('heart', 8)]
-Sentiment Distribution: {'5 stars': 0.7666666666666667, '4 stars': 0.1, '3 stars': 0.06666666666666667, '2 stars': 0.03333333333333333, '1 star': 0.03333333333333333}
-Gender Bias: Gender neutral
-Male Conjugates: 0
-Female Conjugates: 0

@@ -1,8 +1,0 @@
-Input File: results/claude/prompt_engineering/claude_few_shot_responses_hindi.csv
-WEAT Score: 0.0214
-Lexical Diversity: 0.2664
-Top Words: [('*', 272), ('और', 126), ('-', 112), (',', 94), ('की', 86), ('में', 85), ('के', 71), ('को', 57), (':', 56), ('का', 51), ('हैं।', 39), ('हैं', 31), ('है।', 30), ('•', 30), ('करना', 24), ('करते', 23), ('एक', 21), ('करें', 20), ('कौशल', 18), ('से', 18)]
-Sentiment Distribution: {'4 stars': 0.5666666666666667, '5 stars': 0.3333333333333333, '3 stars': 0.1}
-Gender Bias: Male biased
-Male Conjugates: 829
-Female Conjugates: 130

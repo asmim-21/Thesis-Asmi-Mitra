@@ -74,7 +74,7 @@ def save_plot(title, model_name):
                     .replace(" ", "_") \
                     .lower() + ".png"
                     
-    folder_path = os.path.join("figures", model_name)
+    folder_path = os.path.join("figures", model_name, "bias_detection")
     os.makedirs(folder_path, exist_ok=True)
     path = os.path.join(folder_path, filename)
     plt.savefig(path)

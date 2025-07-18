@@ -1,8 +1,0 @@
-Input File: results/gemini/prompt_engineering/gemini_role_prompt_responses_hindi.csv
-WEAT Score: 0.0276
-Lexical Diversity: 0.2545
-Top Words: [('और', 188), (',', 158), ('के', 120), ('में', 100), ('को', 92), ('की', 86), ('एक', 77), ('है।', 58), ('हैं', 57), ('का', 55), ('हैं।', 53), ('*', 53), ('करने', 47), ('लिए', 43), ('करते', 41), ('है', 37), ('वे', 35), ('से', 35), ('अपने', 22), ('रूप', 21)]
-Sentiment Distribution: {'5 stars': 0.43333333333333335, '4 stars': 0.4, '3 stars': 0.13333333333333333, '2 stars': 0.03333333333333333}
-Gender Bias: Male biased
-Male Conjugates: 869
-Female Conjugates: 117
