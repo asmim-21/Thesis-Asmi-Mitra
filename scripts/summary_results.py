@@ -93,7 +93,7 @@ def plot_heatmap(df):
 
     sns.heatmap(heatmap_data, annot=True, cmap="coolwarm", fmt=".5f")
 
-    plt.title("Bias Level (WEAT Score) per Model per Language")
+    plt.title("Comparison of WEAT Bias Scores Across Models and Languages")
     plt.ylabel("Model")
     plt.xlabel("Language")
     plt.tight_layout()
@@ -108,6 +108,8 @@ def plot_line_technique_language(df):
     fig, axes = plt.subplots(1, len(MODELS), figsize=(18, 5), sharey=True)
     for idx, model in enumerate(MODELS):
         ax = axes[idx]
+        ax.yaxis.set_visible(True)
+        ax.tick_params(axis='y', which='both', labelleft=True)
         sub = df[df["model"] == model]
 
         for language in LANGUAGES:
@@ -124,10 +126,10 @@ def plot_line_technique_language(df):
         ax.set_xticks(range(len(TECHNIQUES)))
         ax.set_xticklabels([t.replace("_", " ").title() for t in TECHNIQUES])
         ax.set_ylabel("Average WEAT Score")
-        ax.legend()
-    plt.suptitle("WEAT Score by Technique (per Model)")
-    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-    plt.savefig(os.path.join(FIGURE_DIR, "line_technique_language_all_models.png"))
+        ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1), borderaxespad=0)
+    plt.suptitle("Effect of Prompt Engineering Technique on WEAT Bias Score for Each Model")
+    plt.tight_layout()
+    plt.savefig(os.path.join(FIGURE_DIR, "line_technique_language.png"))
     plt.close()
 
 def plot_scatter_word_limit(df):
@@ -151,6 +153,8 @@ def plot_scatter_word_limit(df):
         axes = [axes]
     for idx, language in enumerate(LANGUAGES):
         ax = axes[idx]
+        ax.yaxis.set_visible(True)
+        ax.tick_params(axis='y', which='both', labelleft=True)
         lang_df = plot_df[plot_df["language"] == language]
         if lang_df.empty:
             continue
@@ -169,9 +173,9 @@ def plot_scatter_word_limit(df):
         ax.set_ylabel("Response Length")
         ax.set_yticks([0, 1, 2])
         ax.set_yticklabels(["50", "100", "200"])
-        ax.legend()
-    plt.suptitle("WEAT Score vs Response Length (Per Response)")
-    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+        ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1), borderaxespad=0)
+    plt.suptitle("Relationship Between WEAT Bias Score and Response Length by Model and Language")
+    plt.tight_layout()
     plt.savefig(os.path.join(FIGURE_DIR, "scatter_word_limit_weat.png"))
     plt.close()
 
@@ -184,6 +188,8 @@ def plot_line_technique_model(df):
         axes = [axes]
     for idx, language in enumerate(LANGUAGES):
         ax = axes[idx]
+        ax.yaxis.set_visible(True)
+        ax.tick_params(axis='y', which='both', labelleft=True)
         sub = df[df["language"] == language]
         for model in MODELS:
             model_sub = sub[sub["model"] == model]
@@ -198,10 +204,10 @@ def plot_line_technique_model(df):
         ax.set_xticks(range(len(TECHNIQUES)))
         ax.set_xticklabels([t.replace("_", " ").title() for t in TECHNIQUES])
         ax.set_ylabel("Average WEAT Score")
-        ax.legend()
-    plt.suptitle("WEAT Score by Model, Language, and Technique")
-    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-    plt.savefig(os.path.join(FIGURE_DIR, "conclusive_weat_graph.png"))
+        ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1), borderaxespad=0)
+    plt.suptitle("Comparison of WEAT Bias Scores Across Models and Languages for Each Prompt Engineering Technique")
+    plt.tight_layout()
+    plt.savefig(os.path.join(FIGURE_DIR, "line_technique_model.png"))
     plt.close()
 
 # --- Main Execution ---
