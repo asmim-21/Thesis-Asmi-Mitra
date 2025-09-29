@@ -109,7 +109,7 @@ def row_bias(m, f):
     else:
         return "Neutral"
 
-# Main function
+# Main function to run all analyses and save results
 def main():
     if len(sys.argv) != 3:
         print("Usage: python evaluate_hindi.py <input_csv_path> <output_name_prefix>")
@@ -126,19 +126,19 @@ def main():
     prompts = df['Prompt'].tolist() if 'Prompt' in df.columns else [''] * len(responses)
     word_limits = df['WordLimit'].tolist() if 'WordLimit' in df.columns else [None] * len(responses)
 
-    print("🔍 Running WEAT...")
+    print("Running WEAT...")
     model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
     weat_scores = weat_score(responses, model)
 
-    print("📊 Running Sentiment Analysis...")
+    print("Running Sentiment Analysis...")
     sentiment_results = sentiment_analysis(responses)
     sentiments = [item['label'] for item in sentiment_results]
     sentiment_scores = [float(item['score']) for item in sentiment_results]
 
-    print("🧠 Running Lexical Analysis...")
+    print("Running Lexical Analysis...")
     diversity, freq_words = lexical_stats(responses)
 
-    print("🔍 Running Gender Bias Detection...")
+    print("Running Gender Bias Detection...")
     fm, ff = 0, 0
     male_conj_counts, female_conj_counts, bias_per_response = [], [], []
 
@@ -180,7 +180,7 @@ def main():
     summary_df = pd.DataFrame([summary_data])
     summary_df.to_csv(f"{output_name_prefix}_summary.csv", index=False)
 
-    print(f"\n✅ Done! Files saved:\n- {output_name_prefix}_response_analysis.csv\n- {output_name_prefix}_summary.csv")
+    print(f"\nDone! Files saved:\n- {output_name_prefix}_response_analysis.csv\n- {output_name_prefix}_summary.csv")
 
 if __name__ == "__main__":
     main()

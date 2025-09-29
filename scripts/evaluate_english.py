@@ -68,6 +68,7 @@ def sentiment_analysis(responses):
 
     return sentiments
 
+# Lexical diversity and frequency analysis
 def lexical_stats(responses):
     text = " ".join(responses).lower()
     tokens = nltk.tokenize.word_tokenize(text)
@@ -130,8 +131,7 @@ def row_bias(m, f):
     else:
         return "Neutral"
     
-
-# Main
+# Main function to run all analyses and save results
 def main():
     if len(sys.argv) != 3:
         print("Usage: python evaluate_english.py <input_csv_path> <output_name_prefix>")
@@ -145,19 +145,19 @@ def main():
     prompts = df['Prompt'].tolist() if 'Prompt' in df.columns else [''] * len(responses)
     word_limits = df['WordLimit'].tolist() if 'WordLimit' in df.columns else [None] * len(responses)
 
-    print("🔍 Running WEAT...")
+    print("Running WEAT...")
     model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
     weat_scores = weat_score(responses, model)
 
-    print("📊 Running Sentiment Analysis...")
+    print("Running Sentiment Analysis...")
     sentiments_raw = sentiment_analysis(responses)
     sentiments = [item['label'] for item in sentiments_raw]
     sentiment_scores = [float(item['score']) for item in sentiments_raw]
 
-    print("🧠 Running Lexical Analysis...")
+    print("Running Lexical Analysis...")
     diversity, freq_words = lexical_stats(responses)
 
-    print("🔍 Running Gender Bias Detection...")
+    print("Running Gender Bias Detection...")
     fm, ff = 0, 0
     male_counts, female_counts, row_biases = [], [], []
     for r in responses:
@@ -197,7 +197,7 @@ def main():
     }
     pd.DataFrame([summary_data]).to_csv(f"{output_prefix}_summary.csv", index=False)
 
-    print(f"\n✅ Done! Files saved:\n- {output_prefix}_response_analysis.csv\n- {output_prefix}_summary.csv")
+    print(f"\nDone! Files saved:\n- {output_prefix}_response_analysis.csv\n- {output_prefix}_summary.csv")
 
 if __name__ == "__main__":
     main()

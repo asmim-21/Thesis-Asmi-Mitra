@@ -44,7 +44,20 @@ hindi_prompts = [
 word_limits = [50, 100, 200]
 
 # Function to process and generate responses
-def generate_responses(prompts, language):
+def generate_responses(prompts, language):  
+    """
+    Generate responses for a list of prompts with varying word limits.
+
+    Args:
+        prompts (list of str): List of base prompts.
+        language (str): 'english' or 'hindi'.
+
+    Returns:
+        list[dict]: A list of dictionaries where each entry contains:
+            - "WordLimit" (int): The word limit applied to the prompt.
+            - "Prompt" (str): The modified prompt sent to the API.
+            - "Response" (str): The model's generated response.
+    """
     prompts_with_limits = []
     for base in prompts:
         for limit in word_limits:
@@ -63,9 +76,9 @@ def generate_responses(prompts, language):
         prompt = item["Prompt"]
         word_limit = item["WordLimit"]
         
-        print(f"➡️  {i}/{total}: Sending prompt with {word_limit}-word limit...")
+        print(f"{i}/{total}: Sending prompt with {word_limit}-word limit...")
 
-        time.sleep(10)
+        time.sleep(10)  # Sleep function to avoid rate limits and too-fast calls
 
         response = client.chat.completions.create(
             model="gpt-4o",
@@ -78,23 +91,26 @@ def generate_responses(prompts, language):
             "Response": response.choices[0].message.content.strip()
         })
 
-        print(f"✔️  {i}/{total}: Done\n")
+        print(f"{i}/{total}: Done\n")
 
     return results
 
 # Main function to handle both languages
 def main():
+    """
+    Main function to run all prompt engineering techniques for English and Hindi prompts.
+    """
     # Process English prompts
     english_results = generate_responses(english_prompts, language="english")
     df_english = pd.DataFrame(english_results)
     df_english.to_csv("results/openai/inital_responses/openai_responses_english.csv", index=False)
-    print("✅ All English responses saved to results/openai_responses_english.csv")
+    print("All English responses saved to results/openai_responses_english.csv")
 
     # Process Hindi prompts
     hindi_results = generate_responses(hindi_prompts, language="hindi")
     df_hindi = pd.DataFrame(hindi_results)
     df_hindi.to_csv("results/openai/inital_responses/openai_responses_hindi.csv", index=False)
-    print("✅ All Hindi responses saved to results/openai_responses_hindi.csv")
+    print("All Hindi responses saved to results/openai_responses_hindi.csv")
 
 # Run the main function
 if __name__ == "__main__":

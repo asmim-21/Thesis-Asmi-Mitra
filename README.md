@@ -1,16 +1,38 @@
 # **Adaptive Prompt Engineering for Gender Bias Mitigation in Multilingual Large Language Models**  
 
+**Written By: Asmi Mitra**  
+Supervisor: Dr. Shahadat Uddin    
+A thesis submitted in fulfilment of the requirements for the degree of Bachelor of Engineering Honours (Software)  
+
+School of Electrical & Computer Engineering   
+Faculty of Engineering   
+The University of Sydney  
+
 ## **Overview**  
 This research investigates gender bias in Large Language Models (LLMs) by analyzing responses from three different models: **OpenAI’s GPT, Google Gemini, and Anthropic Claude**. By collecting responses to identical prompts and applying computational bias detection techniques, this study aims to identify and mitigate gender bias through **prompt engineering**.  
 
 ## **Data Collection**  
 Each LLM has its own results folder and associated Python scripts for processing and analysis.
 ```
+├── figures/
+│   ├── claude/
+│   │   ├── bias_detection/
+│   │   └── prompt_engineering/
+│   ├── ...
+│   └── summary/
+│       ├── heatmap_model_language_weat.png
+│       ...
 ├── results/
 │   ├── claude/
-│   ├── gemini/
-│   ├── openai/
-│   └── ... (bias_detection, initial_responses, prompt_engineering)
+│   │   ├── bias_detection/
+│   │   ├── initial_responses/
+│   │   ├── prompt_engineering/
+│   ├── ...
+│   └── extracted_questions/
+│       ├── claude_base_english_selected_questions.csv
+│       ├── claude_base_hindi_selected_questions.csv
+│       ├── claude_explicit_instruction_english_selected_questions.csv
+│       ...
 ├── scripts/
 │   ├── claude/
 │   ├── gemini/
@@ -40,7 +62,7 @@ These methods allow for the detection of both overt and subtle biases within mod
 ## **Bias Mitigation Through Prompt Engineering**  
 Following initial bias detection, prompt engineering techniques will be applied to reduce gender bias and the process will be repeated.  
 
-### **Proposed Prompt Engineering Strategies:**  
+### **Prompt Engineering Strategies:**  
 1. **Explicit Instruction Prompting**
    
    Prompts include direct instructions asking the model to generate unbiased, fair, or gender-neutral responses.

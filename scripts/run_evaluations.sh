@@ -45,4 +45,4 @@ python scripts/evaluate_english.py results/claude/prompt_engineering/claude_expl
 python scripts/evaluate_english.py results/claude/prompt_engineering/claude_few_shot_responses_english.csv results/claude/prompt_engineering/claude_few_shot_bias_english
 python scripts/evaluate_english.py results/claude/prompt_engineering/claude_role_prompt_responses_english.csv results/claude/prompt_engineering/claude_role_prompt_bias_english
 
-echo "✅ All evaluations complete."
+echo "All evaluations complete."

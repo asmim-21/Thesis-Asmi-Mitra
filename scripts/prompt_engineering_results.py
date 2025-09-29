@@ -5,10 +5,10 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
-# --- Seaborn Style ---
+# Seaborn Style
 sns.set(style="whitegrid")
 
-# --- Constants ---
+# Constants
 BASE_DIR = "results"
 LANGUAGES = ['english', 'hindi']
 SENTIMENT_LABELS = ['5 stars', '4 stars', '3 stars', '2 stars', '1 star']
@@ -55,6 +55,7 @@ LANGUAGE_WORD_MAPS = {
     }
 }
 
+# Associating Word Lists with genders
 def get_gender_tag(word, language):
     """
     Return the gender tag ('Male', 'Female', 'Neutral') for a given word and language.
@@ -67,6 +68,7 @@ def get_gender_tag(word, language):
     else:
         return 'Neutral'
 
+# Load data from CSV files of different models and languages
 def load_summary_csv(model_name, technique, language):
     """
     Load the summary CSV for a given model, technique, and language.
@@ -99,6 +101,7 @@ def load_response_csv(model_name, technique, language):
     )
     return pd.read_csv(path)
 
+# Save plots to appropriate directories
 def save_plot(title, model_name, technique):
     """
     Save the current matplotlib plot to the appropriate figures directory with a formatted filename.
@@ -112,8 +115,9 @@ def save_plot(title, model_name, technique):
     os.makedirs(folder_path, exist_ok=True)
     path = os.path.join(folder_path, filename)
     plt.savefig(path)
-    print(f"✅ Saved: {path}")
+    print(f"Saved: {path}")
 
+# Plotting gender conjugate counts for each model, technique and language
 def plot_gender_conjugate_barchart(data, model_name, technique, language):
     """
     Plot a bar chart of male and female conjugate counts for a given model, technique, and language.
@@ -132,6 +136,7 @@ def plot_gender_conjugate_barchart(data, model_name, technique, language):
     save_plot(title, model_name, technique)
     plt.close()
 
+# Plotting top word frequencies for each model, technique and language
 def plot_word_frequency_barchart(data, model_name, technique, language):
     """
     Plot a bar chart of the top 20 frequent words, colored by gender, for a given model, technique, and language.
@@ -159,6 +164,7 @@ def plot_word_frequency_barchart(data, model_name, technique, language):
     save_plot(title, model_name, technique)
     plt.close()
 
+# Plotting sentiment distribution pie chart for each model, technique and language
 def plot_sentiment_distribution(df, model_name, technique, language):
     """
     Plot a pie chart of sentiment label distribution for a given model, technique, and language.
@@ -182,33 +188,14 @@ def plot_sentiment_distribution(df, model_name, technique, language):
     save_plot(title, model_name, technique)
     plt.close()
 
-def generate_all_charts(model_name):
-    for lang in LANGUAGES:
-        print(f"\n📊 Processing {model_name.title()} ({lang.title()})")
-
-        # Set font depending on language
-        if lang == 'hindi':
-            plt.rcParams['font.family'] = 'Mangal'  
-        else:
-            plt.rcParams['font.family'] = 'DejaVu Sans'  
-
-        try:
-            bias_data = load_summary_csv(model_name, lang)
-            response_df = load_response_csv(model_name, lang)
-
-            plot_gender_conjugate_barchart(bias_data, model_name, lang)
-            plot_word_frequency_barchart(bias_data, model_name, lang)
-            plot_sentiment_distribution(response_df, model_name, lang)
-        except Exception as e:
-            print(f"❌ Error processing {model_name} {lang}: {e}")
-
+# Generate all charts for a given model across languages and techniques
 def generate_all_charts(model_name):
     """
     Generate and save all charts (gender conjugate, word frequency, sentiment) for all techniques and languages for a given model.
     """
     for technique in TECHNIQUES:
         for language in LANGUAGES:
-            print(f"\n📊 Processing {model_name} - {technique} - {language}")
+            print(f"\nProcessing {model_name} - {technique} - {language}")
 
             # Set font depending on language
             if language == 'hindi':
@@ -224,9 +211,9 @@ def generate_all_charts(model_name):
                 plot_word_frequency_barchart(bias_data, model_name, technique, language)
                 plot_sentiment_distribution(response_df, model_name, technique, language)
             except Exception as e:
-                print(f"❌ Error processing {model_name} - {technique} - {language}: {e}")
+                print(f"Error processing {model_name} - {technique} - {language}: {e}")
 
-# --- Main Execution ---
+# Main Execution
 if __name__ == "__main__":
     # Generate all charts for each model
     generate_all_charts("gemini")
