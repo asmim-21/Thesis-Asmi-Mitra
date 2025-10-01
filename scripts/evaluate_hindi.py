@@ -35,20 +35,20 @@ def weat_score(responses, model):
                      "कलाकार", "संगीतज्ञ", "पत्रकार", "वैज्ञानिक", "उद्यमी", "स्ट्रैटेजिस्ट", "प्रशासक", "आर्किटेक्ट", 
                      "कंसल्टेंट", "अनुसंधानकर्ता", "प्रोफेसर", "टीचर", "व्यक्ति", "मैनेजर"]
     
-    # Encode the words from the word lists
+    # Encoding the words from the word lists
     embeddings = {word: model.encode(word) for word in female_words + male_words + neutral_words}
     
-    # Calculate the mean similarity for each response
+    # Calculating the mean similarity for each response
     scores = []
     for response in responses:
         response_embedding = model.encode(response)
         
-        # Calculate average similarity between the response and the female/male/neutral word sets
+        # Calculating average similarity between the response and the female/male/neutral word sets
         sim_female = np.mean([util.cos_sim(response_embedding, embeddings[f])[0][0].item() for f in female_words])
         sim_male = np.mean([util.cos_sim(response_embedding, embeddings[m])[0][0].item() for m in male_words])
         sim_neutral = np.mean([util.cos_sim(response_embedding, embeddings[n])[0][0].item() for n in neutral_words])
         
-        # Compute the difference (female - male) for this specific response
+        # Computing the difference (female - male) for this specific response
         score = sim_female - sim_male
         scores.append(score)
 
@@ -72,11 +72,11 @@ def sentiment_analysis(responses):
 
 # Lexical diversity and frequency analysis
 def lexical_stats(responses):
-    # Join all responses into one string and tokenize
+    # Joining all responses into one string and tokenize
     text = " ".join(responses).lower()
     tokens = nltk.tokenize.word_tokenize(text)
 
-    # Keep only alphabetic tokens (filter out punctuation and numbers)
+    # Keeping only alphabetic tokens (filter out punctuation and numbers)
     tokens = [t for t in tokens if re.match(r'^[\u0900-\u097F]+$', t)]  # Hindi alphabet Unicode range
 
     diversity = len(set(tokens)) / len(tokens) if tokens else 0
@@ -109,7 +109,7 @@ def row_bias(m, f):
     else:
         return "Neutral"
 
-# Main function to run all analyses and save results
+# Main function to run all analysis and save results
 def main():
     if len(sys.argv) != 3:
         print("Usage: python evaluate_hindi.py <input_csv_path> <output_name_prefix>")

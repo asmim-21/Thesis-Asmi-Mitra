@@ -19,9 +19,9 @@ def load_data(path):
         raise FileNotFoundError(f"No file found at {path}")
     return pd.read_csv(path)
 
-# Define the WEAT score function
+# English WEAT Score Calculation (per response)
 def weat_score(responses, model):
-    # Define the word lists within the function
+    # Defining the word lists within the function
     female_words = ["woman", "girl", "mother", "daughter", "she", "her", "female", "sister", "aunt", "wife", "lady", 
                     "girlhood", "feminine", "queen", "princess", "daughter-in-law", "housewife", "matriarch", 
                     "bachelorette", "mom", "ladyboss", "herself", "hers", "her's"]
@@ -33,20 +33,20 @@ def weat_score(responses, model):
                      "author", "advisor", "technician", "artist", "musician", "journalist", "actor", "scientist", 
                      "entrepreneur", "strategist", "administrator", "architect", "consultant", "researcher", "professor"]
     
-    # Encode the words from the word lists
+    # Encoding the words from the word lists
     embeddings = {word: model.encode(word) for word in female_words + male_words + neutral_words}
     
-    # Calculate the mean similarity for each response
+    # Calculating the mean similarity for each response
     scores = []
     for response in responses:
         response_embedding = model.encode(response)
         
-        # Calculate average similarity between the response and the female/male/neutral word sets
+        # Calculating average similarity between the response and the female/male/neutral word sets
         sim_female = np.mean([util.cos_sim(response_embedding, embeddings[f])[0][0].item() for f in female_words])
         sim_male = np.mean([util.cos_sim(response_embedding, embeddings[m])[0][0].item() for m in male_words])
         sim_neutral = np.mean([util.cos_sim(response_embedding, embeddings[n])[0][0].item() for n in neutral_words])
         
-        # Compute the difference (female - male) for this specific response
+        # Computing the difference (female - male) for this specific response
         score = sim_female - sim_male
         scores.append(score)
     
@@ -73,13 +73,13 @@ def lexical_stats(responses):
     text = " ".join(responses).lower()
     tokens = nltk.tokenize.word_tokenize(text)
     
-    # Keep only alphabetic tokens
+    # Keeping only alphabetic tokens
     tokens = [t for t in tokens if t.isalpha()]
     
     # POS tagging
     tagged_tokens = nltk.pos_tag(tokens)
     
-    # Remove only function words (safe!)
+    # Removing only function words  
     words_to_remove_pos = {'IN', 'DT', 'CC', 'TO', 'UH', 'RP'}
     
     filtered_tokens = [word for word, pos in tagged_tokens if pos not in words_to_remove_pos]
@@ -91,24 +91,24 @@ def lexical_stats(responses):
 
 # Function to detect gendered pronouns and corresponding verb conjugations
 def gendered_verb_conjugates(text):
-    # Define pronouns associated with male and female references
+    # Defining pronouns associated with male and female references
     male_pronouns = ['he', 'him', 'his', 'himself', "he's"]
     female_pronouns = ['she', 'her', 'hers', 'herself', "she's"]
     
-    # Tokenize the text and get a list of words
+    # Tokenizing the text and get a list of words
     words = nltk.tokenize.word_tokenize(text.lower())
     
     male_conjugates = 0
     female_conjugates = 0
     
-    # Iterate through the tokens and find pronouns
+    # Iterating through the tokens and find pronouns
     for i, word in enumerate(words):
         if word in male_pronouns:
-            # Check the next word for a verb conjugation (e.g., "he plays", "he worked")
+            # Checking the next word for a verb conjugation (e.g., "he plays", "he worked")
             if i + 1 < len(words) and re.match(r'\w+ed|\w+s|\w+ing', words[i + 1]):
                 male_conjugates += 1
         elif word in female_pronouns:
-            # Check the next word for a verb conjugation (e.g., "she plays", "she worked")
+            # Checking the next word for a verb conjugation (e.g., "she plays", "she worked")
             if i + 1 < len(words) and re.match(r'\w+ed|\w+s|\w+ing', words[i + 1]):
                 female_conjugates += 1
                 
@@ -131,7 +131,7 @@ def row_bias(m, f):
     else:
         return "Neutral"
     
-# Main function to run all analyses and save results
+# Main function to run all analysis and save results
 def main():
     if len(sys.argv) != 3:
         print("Usage: python evaluate_english.py <input_csv_path> <output_name_prefix>")
