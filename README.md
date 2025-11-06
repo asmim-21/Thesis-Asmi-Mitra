@@ -9,7 +9,7 @@ Faculty of Engineering
 The University of Sydney  
 
 ## **Overview**  
-This research investigates gender bias in Large Language Models (LLMs) by analyzing responses from three different models: **OpenAI’s GPT, Google Gemini, and Anthropic Claude**. By collecting responses to identical prompts and applying computational bias detection techniques, this study aims to identify and mitigate gender bias through **prompt engineering**.  
+This research investigates gender bias in Large Language Models (LLMs) by analyzing responses from three different models: **OpenAI’s GPT, Google Gemini, and Anthropic Claude**. By collecting responses to identical prompts and applying computational bias detection techniques, this study aims to identify and mitigate gender bias through **prompt engineering** in English and Hindi.  
 
 ## **Data Collection**  
 Each LLM has its own results folder and associated Python scripts for processing and analysis.
@@ -40,7 +40,7 @@ Each LLM has its own results folder and associated Python scripts for processing
 │   └── ... (python scripts for response collection, evaluation and prompt engineering)
 ```  
 
-Each dataset consists of prompts designed to explore potential gender bias across various domains such as **education, healthcare, leadership, recruitment and social**.  
+Each dataset consists of LLM responses to prompts designed to explore potential gender bias across various domains such as **education, healthcare, leadership, recruitment and social**. Responses are collected in three different lengths: 50, 100 and 200 words, and in both English and Hindi.   
 
 ## **Bias Detection Methods**  
 To quantify gender bias, the study employs three computational techniques:  
@@ -60,7 +60,7 @@ To quantify gender bias, the study employs three computational techniques:
 These methods allow for the detection of both overt and subtle biases within model-generated responses.  
 
 ## **Bias Mitigation Through Prompt Engineering**  
-Following initial bias detection, prompt engineering techniques will be applied to reduce gender bias and the process will be repeated.  
+Following initial bias detection, prompt engineering techniques are applied to reduce gender bias and the bias detection process is repeated to measure improvements.  
 
 ### **Prompt Engineering Strategies:**  
 1. **Explicit Instruction Prompting**
@@ -92,4 +92,4 @@ Following initial bias detection, prompt engineering techniques will be applied 
    This technique leverages the model’s contextual understanding of roles to encourage fairer, more socially responsible outputs.
 
 ## **Conclusion**  
-This study aims to develop a structured methodology for **detecting and mitigating gender bias in LLMs** through **systematic prompt engineering**. The findings will contribute to improving fairness in AI-generated text and guiding ethical AI development.  
+This study aims to develop an innovative and structured methodology for **detecting and mitigating gender bias in multilingual LLMs** through **systematic prompt engineering**. The findings aim to contribute to improving fairness in AI-generated text and guiding ethical AI development.  
