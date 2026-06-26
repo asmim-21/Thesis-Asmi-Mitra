@@ -103,14 +103,14 @@ def main():
     # Process English prompts
     english_results = generate_responses(english_prompts, language="english")
     df_english = pd.DataFrame(english_results)
-    df_english.to_csv("results/openai/inital_responses/openai_responses_english.csv", index=False)
-    print("All English responses saved to results/openai_responses_english.csv")
+    df_english.to_csv("results/openai/initial_responses/openai_responses_english.csv", index=False)
+    print("All English responses saved to results/openai/initial_responses/openai_responses_english.csv")
 
     # Process Hindi prompts
     hindi_results = generate_responses(hindi_prompts, language="hindi")
     df_hindi = pd.DataFrame(hindi_results)
-    df_hindi.to_csv("results/openai/inital_responses/openai_responses_hindi.csv", index=False)
-    print("All Hindi responses saved to results/openai_responses_hindi.csv")
+    df_hindi.to_csv("results/openai/initial_responses/openai_responses_hindi.csv", index=False)
+    print("All Hindi responses saved to results/openai/initial_responses/openai_responses_hindi.csv")
 
 # Run the main function
 if __name__ == "__main__":

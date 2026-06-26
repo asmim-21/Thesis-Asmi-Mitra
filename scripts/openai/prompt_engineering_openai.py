@@ -199,7 +199,7 @@ def generate_and_save(prompts, language, technique_fn, technique_name):
         })
 
     df = pd.DataFrame(results)
-    filename = f"results/prompt_engineering/openai_{technique_name}_responses_{language}.csv"
+    filename = f"results/openai/prompt_engineering/openai_{technique_name}_responses_{language}.csv"
     df.to_csv(filename, index=False)
     print(f"Saved {technique_name} results for {language} to {filename}")
 

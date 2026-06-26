@@ -1,9 +1,18 @@
+# Data handling & numerics
 pandas
+numpy
+
+# NLP & bias-detection models
 torch
 nltk
 transformers
 sentence-transformers
-numpy
-anthropic
+
+# Plotting (figure generation)
+matplotlib
+seaborn
+
+# LLM provider SDKs (response collection)
 openai
-google
+anthropic
+google-genai
