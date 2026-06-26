@@ -67,8 +67,10 @@ pipeline is re-run to measure improvement:
 ```
 .
 ├── README.md                  # This file
-├── TECHNICAL_MANUAL.md        # Step-by-step guide to reproduce the full pipeline
 ├── requirements.txt           # Python dependencies
+├── docs/                      # Documentation assets
+│   ├── TECHNICAL_MANUAL.md    # Step-by-step guide to reproduce the full pipeline
+│   └── methodology.png        # Methodology overview figure
 ├── scripts/                   # All code
 │   ├── openai/                # GPT-4o response collection (baseline + prompt engineering)
 │   ├── claude/                # Claude response collection
@@ -96,7 +98,7 @@ pipeline is re-run to measure improvement:
 ## Reproducing the study
 
 The complete, step-by-step procedure — environment setup, API keys, running each stage, and the exact
-commands — is documented in **[TECHNICAL_MANUAL.md](TECHNICAL_MANUAL.md)**.
+commands — is documented in **[docs/TECHNICAL_MANUAL.md](docs/TECHNICAL_MANUAL.md)**.
 
 Quick start:
 
@@ -126,3 +128,17 @@ This study develops a structured, reproducible methodology for **detecting and m
 in multilingual LLMs** through systematic prompt engineering. By comparing three models across two
 languages, three response lengths, and three mitigation strategies, the findings contribute to fairer
 AI-generated text and to the broader goal of ethical, language-inclusive AI development.
+
+## Citation
+
+If you use this repository in your own research, please cite the following work:
+
+```bibtex
+@mastersthesis{mitra2025promptbias,
+    author  = {Asmi Mitra and Shahadat Uddin},
+    title   = {Adaptive Prompt Engineering for Gender Bias Mitigation in Multilingual Large Language Models},
+    school  = {The University of Sydney},
+    year    = {2025},
+    type    = {Bachelor of Engineering Honours (Software) thesis}
+}
+```
